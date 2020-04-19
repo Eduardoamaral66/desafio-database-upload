@@ -18,7 +18,7 @@ class TransactionsRepository extends Repository<Transaction> {
     }, 0);
 
     const totalOutcome = allTransactions.reduce((sum, transaction) => {
-      return transaction.type === 'income' ? sum + transaction.value : sum;
+      return transaction.type === 'outcome' ? sum + transaction.value : sum;
     }, 0);
 
     const balance = {

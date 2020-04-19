@@ -1,3 +1,4 @@
+import { getCustomRepository } from 'typeorm';
 import Transaction from '../models/Transaction';
 import CategoriesRepository from '../repositories/CategoriesRepository';
 import TransactionsRepository from '../repositories/TransactionsRepository';
@@ -17,8 +18,8 @@ class CreateTransactionService {
     type,
     category,
   }: Request): Promise<Transaction> {
-    const categoriesRepository = new CategoriesRepository();
-    const transactionRepository = new TransactionsRepository();
+    const categoriesRepository = getCustomRepository(CategoriesRepository);
+    const transactionRepository = getCustomRepository(TransactionsRepository);
 
     if (type === 'outcome') {
       await this.validateHaveBalance(value);
@@ -27,22 +28,21 @@ class CreateTransactionService {
     const categoryEnt = await categoriesRepository.getOrCreateCategory(
       category,
     );
-
+    console.log(`title:${title};  category:${categoryEnt}`);
     const transaction = transactionRepository.create({
       title,
       value,
       type,
       category_id: categoryEnt.id,
     });
-    transactionRepository.save(transaction);
+    await transactionRepository.save(transaction);
 
     return transaction;
   }
 
   private async validateHaveBalance(value: number): Promise<boolean> {
-    const transactionRepository = new TransactionsRepository();
+    const transactionRepository = getCustomRepository(TransactionsRepository);
     const balance = await transactionRepository.getBalance();
-
     if (balance.total - value < 0) {
       throw new AppError('Balance error');
     }

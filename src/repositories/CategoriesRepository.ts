@@ -14,7 +14,7 @@ class CategoriesRepository extends Repository<Category> {
 
     const category = this.create({ title: categoryTitle });
 
-    this.save(category);
+    await this.save(category);
 
     return category;
   }
