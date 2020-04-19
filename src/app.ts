@@ -10,6 +10,7 @@ import AppError from './errors/AppError';
 import createConnection from './database';
 
 createConnection();
+console.log('criou');
 const app = express();
 
 app.use(express.json());
